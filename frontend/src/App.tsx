@@ -23,12 +23,27 @@ function Homepage({ setAppstate }: { setAppstate: (state: boolean) => void }) {
 
 function Room({ setAppstate }: { setAppstate: (state: boolean) => void }) {
   return (
-    <div className="flex flex-col min-h-screen min-w-screen bg-gray-800 items-center">
-        <h1 className="text-9xl m-20 text-white">Room Name</h1>
-        <div className="felx m-30">
-          <button className="w-50 h-20 rounded-3xl bg-blue-800 m-3 text-2xl text-white" onClick={() => setAppstate(false)}>Back</button>
+    <div className="flex">
+
+      <div className="flex flex-col min-h-screen max-h-screen w-60 bg-gray-700 items-center">
+        <h1 className="text-3xl m-3 text-white">Pepole</h1>
+
+        <div className="flex flex-col items-center w-full h-full">
         </div>
+
+        <button className="w-50 h-20 rounded-3xl bg-blue-800 m-3 text-2xl text-white" onClick={() => setAppstate(false)}>exit</button>
+      </div>
+
+      <div className="flex flex-col min-h-screen max-h-screen w-full bg-gray-800 items-center">
+        <h1 className="text-9xl m-1 text-white">Room Name</h1>
+        <img src="../public/coffe.gif" width={500} />
+        <div className="felx m-30">
+          <button className="w-50 h-20 rounded-3xl bg-blue-800 m-3 text-2xl text-white">Ping</button>
+        </div>
+      </div>
+
     </div>
+    
   )
 }
 
