@@ -34,7 +34,8 @@ class RoomWebSocket(WebSocketEndpoint):
     async def on_connect(self, websocket):
         id = websocket.path_params['id']
         self.room = getRoom(id)
-        await self.room.add_client(websocket)
+        if room is not None:
+            await self.room.add_client(websocket)
 
     async def on_disconnect(self, websocket, close_code):
         self.room.remove_client(websocket)
