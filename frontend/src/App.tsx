@@ -36,7 +36,7 @@ function Room({ setAppstate }: { setAppstate: (state: boolean) => void }) {
 
       <div className="flex flex-col min-h-screen max-h-screen w-full bg-gray-800 items-center">
         <h1 className="text-9xl m-1 text-white">Room Name</h1>
-        <img src="../public/coffe.gif" width={500} />
+        <img src="../public/coffe.gif" width={500} style={{imageRendering: "pixelated"}} />
         <div className="felx m-30">
           <button className="w-50 h-20 rounded-3xl bg-blue-800 m-3 text-2xl text-white">Ping</button>
         </div>
