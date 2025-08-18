@@ -1,4 +1,7 @@
+import coffeUrl from "../assets/coffe.gif"
+
 export function Room({ setAppstate }: { setAppstate: (state: boolean) => void }) {
+  const roomid = localStorage.getItem("roomid")
   return (
     <div className="flex">
 
@@ -10,12 +13,12 @@ export function Room({ setAppstate }: { setAppstate: (state: boolean) => void })
 
 
         <button className="w-50 h-15 rounded-3xl bg-blue-700 m-3 text-2xl text-white" >Invite</button>
-        <button className="w-50 h-15 rounded-3xl bg-red-700 m-3 text-2xl text-white" onClick={() => setAppstate(false)}>Exit</button>
+        <button className="w-50 h-15 rounded-3xl bg-red-700 m-3 text-2xl text-white" onClick={() => {localStorage.removeItem("roomid"); setAppstate(false)}}>Exit</button>
       </div>
 
       <div className="flex flex-col min-h-screen max-h-screen w-full bg-gray-800 items-center">
-        <h1 className="text-9xl m-1 text-white">Room Name</h1>
-        <img src="../public/coffe.gif" width={500} style={{imageRendering: "pixelated"}} />
+        <h1 className="text-9xl m-1 text-white">Room Name {roomid}</h1>
+        <img src={coffeUrl} width={500} style={{imageRendering: "pixelated"}} />
         <div className="felx m-30">
           <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white">Ping</button>
         </div>

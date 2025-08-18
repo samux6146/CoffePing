@@ -3,10 +3,19 @@ from starlette.responses import JSONResponse #type: ignore
 from starlette.routing import Route, WebSocketRoute #type: ignore
 from starlette.endpoints import WebSocketEndpoint #type: ignore
 from starlette.websockets import WebSocket #type: ignore
+from starlette.responses import HTMLResponse
+from starlette.routing import Mount
+from starlette.staticfiles import StaticFiles
 
 from room import Room
 
 Rooms : list = []
+
+async def home(request):
+    html = ""
+    with open("dist/index.html") as f:
+        html = f.read()
+    return HTMLResponse(html)
 
 def getRoom(id):
     for room in Rooms:
@@ -45,6 +54,8 @@ class RoomWebSocket(WebSocketEndpoint):
 
 
 app = Starlette(debug=True, routes=[
+    Route('/', home),
+    Mount('/assets', app=StaticFiles(directory='dist/assets'), name="static"),
     Route('/newroom', newroom),
     Route('/room/{id}', room),
     WebSocketRoute('/ws/{id}', RoomWebSocket)
