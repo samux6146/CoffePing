@@ -9,7 +9,12 @@ export function Room({ setAppstate }: { setAppstate: (state: boolean) => void })
     const ws = new window.WebSocket("/ws/"+roomid)
     ws.onmessage = (e) => {alert(e.data)}
     setWs(ws)
+
+    return () => {
+      ws.close()
+    }
   }, [roomid])
+  
   
 
   return (

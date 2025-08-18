@@ -4,7 +4,7 @@ export function Homepage({ setAppstate }: { setAppstate: (state: boolean) => voi
         <h1 className="text-9xl m-20 text-white">CoffePing</h1>
         <div className="felx m-30">
           <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white" onClick={() => newroom().then(() => setAppstate(true))}>New Room</button>
-          <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white" onClick={() => {joinroom(); setAppstate(true)}}>Join Room</button>
+          <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white" onClick={() => joinroom(setAppstate)}>Join Room</button>
         </div>
     </div>
   )
@@ -27,10 +27,28 @@ async function newroom(){
   }
 }
 
-async function joinroom(){
-  const roomid = await prompt("Enter room id")
-  if (roomid){
-    localStorage.setItem("roomid", roomid)
+async function joinroom(setAppstate : Function){
+  try {
+    const roomid = await prompt("Enter room id")
+    const response = await fetch("/room/"+roomid, {
+      method: "GET",
+    })
+    if (response.ok) {
+      const data = await response.json();
+      if (data.status == "room found!"){
+        if (roomid){
+          localStorage.setItem("roomid", roomid)
+          setAppstate(true)
+        } else {
+          alert("no id givven")
+        }
+      } else {
+        alert("room not found")
+      }
+    } else {
+      console.error("Failed to fetch data");
+    }
+  } catch(error) {
+    console.error("Error:", error);
   }
-
 }
