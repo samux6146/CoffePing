@@ -1,4 +1,5 @@
 from helpers import generate_uid
+import json
 
 class Room:
     def __init__(self):
@@ -19,8 +20,9 @@ class Room:
         for client in self.connected_clients:
             if client is not sender:
                 try:
-                    await client.send_text(message)
-                except Exception:
+                    await client.send_text(json.dumps(message))
+                except Exception as e: 
+                    print(e)
                     to_remove.append(client)
         # Clean up any broken connections
         for client in to_remove:

@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
 import coffeUrl from "../assets/coffe.gif"
 
 export function Room({ setAppstate }: { setAppstate: (state: boolean) => void }) {
   const roomid = localStorage.getItem("roomid")
+  const [Ws, setWs] = useState<WebSocket | null>(null)
+
+  useEffect(() => {
+    const ws = new window.WebSocket("/ws/"+roomid)
+    ws.onmessage = (e) => {alert(e.data)}
+    setWs(ws)
+  }, [roomid])
+  
+
   return (
     <div className="flex">
 
@@ -20,7 +30,7 @@ export function Room({ setAppstate }: { setAppstate: (state: boolean) => void })
         <h1 className="text-9xl m-1 text-white">Room Name {roomid}</h1>
         <img src={coffeUrl} width={500} style={{imageRendering: "pixelated"}} />
         <div className="felx m-30">
-          <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white">Ping</button>
+          <button className="w-50 h-20 rounded-3xl bg-blue-700 m-3 text-2xl text-white" onClick={() => Ws?.send(JSON.stringify({"data":"test"}))}>Ping</button>
         </div>
       </div>
 
