@@ -21,7 +21,7 @@ def getRoom(id):
     for room in Rooms:
         if room.id == id:
             return room
-        return None
+    return None
 
 
 async def newroom(request):
