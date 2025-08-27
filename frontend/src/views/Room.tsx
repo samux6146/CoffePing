@@ -15,12 +15,14 @@ export function Room({ setAppstate }: { setAppstate: (state: boolean) => void })
   
 
   useEffect(() => {
-    const ws = new window.WebSocket("/ws/"+RoomId)
-    ws.onmessage = (e) => {alert(e.data)}
-    setWs(ws)
+    if(RoomId !== null){
+      const ws = new window.WebSocket("/ws/"+RoomId)
+      ws.onmessage = (e) => {alert(e.data)}
+      setWs(ws)
 
-    return () => {
-      ws.close()
+      return () => {
+        ws.close()
+      }
     }
   }, [RoomId])
 

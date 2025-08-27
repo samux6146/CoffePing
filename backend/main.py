@@ -1,3 +1,6 @@
+import time
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 from starlette.applications import Starlette #type: ignore
 from starlette.responses import JSONResponse #type: ignore
 from starlette.routing import Route, WebSocketRoute #type: ignore
@@ -53,6 +56,43 @@ class RoomWebSocket(WebSocketEndpoint):
         await self.room.broadcast(data, sender=websocket)
 
 
+
+class SmartRateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, capacity: int = 10, refill_time: float = 2.0):
+        super().__init__(app)
+        # Token bucket state per client: {ip: {tokens, last_refill}}
+        self.clients = {}
+        self.capacity = capacity
+        self.refill_time = refill_time  # seconds per token
+
+    async def dispatch(self, request: Request, call_next):
+        client_ip = request.client.host
+        now = time.time()
+
+        state = self.clients.get(client_ip, {"tokens": self.capacity, "last_refill": now})
+
+        # Refill tokens based on elapsed time
+        elapsed = now - state["last_refill"]
+        refill = int(elapsed / self.refill_time)
+        if refill > 0:
+            state["tokens"] = min(self.capacity, state["tokens"] + refill)
+            state["last_refill"] = now
+
+        if state["tokens"] > 0:
+            state["tokens"] -= 1
+            self.clients[client_ip] = state
+            return await call_next(request)
+        else:
+            retry_after = self.refill_time - (elapsed % self.refill_time)
+            return JSONResponse(
+                {"detail": "Rate limit exceeded. Try again later."},
+                status_code=429,
+                headers={"Retry-After": f"{retry_after:.1f}"}
+            )
+
+
+
+
 app = Starlette(debug=True, routes=[
     Route('/', home),
     Mount('/assets', app=StaticFiles(directory='dist/assets'), name="static"),
@@ -60,3 +100,5 @@ app = Starlette(debug=True, routes=[
     Route('/room/{id}', room),
     WebSocketRoute('/ws/{id}', RoomWebSocket)
 ])
+
+app.add_middleware(SmartRateLimitMiddleware)
